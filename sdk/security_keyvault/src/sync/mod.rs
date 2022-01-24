@@ -68,7 +68,7 @@ impl<'a, T: TokenCredential> KeyClient<'a, T> {
     }
 
     pub(crate) fn get_authed(&mut self, uri: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .get(&uri)
@@ -80,7 +80,7 @@ impl<'a, T: TokenCredential> KeyClient<'a, T> {
     }
 
     pub(crate) fn put_authed(&mut self, uri: String, body: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .put(&uri)
@@ -98,7 +98,7 @@ impl<'a, T: TokenCredential> KeyClient<'a, T> {
         uri: String,
         json_body: Option<String>,
     ) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let mut req = reqwest::blocking::Client::new()
             .post(&uri)
@@ -129,7 +129,7 @@ impl<'a, T: TokenCredential> KeyClient<'a, T> {
         uri: String,
         body: String,
     ) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .patch(&uri)
@@ -152,7 +152,7 @@ impl<'a, T: TokenCredential> KeyClient<'a, T> {
     }
 
     pub(crate) fn delete_authed(&mut self, uri: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .delete(&uri)
@@ -221,7 +221,7 @@ impl<'a, T: TokenCredential> CertificateClient<'a, T> {
     }
 
     pub(crate) fn get_authed(&mut self, uri: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .get(&uri)
@@ -233,7 +233,7 @@ impl<'a, T: TokenCredential> CertificateClient<'a, T> {
     }
 
     pub(crate) fn _put_authed(&mut self, uri: String, body: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .put(&uri)
@@ -251,7 +251,7 @@ impl<'a, T: TokenCredential> CertificateClient<'a, T> {
         uri: String,
         json_body: Option<String>,
     ) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let mut req = reqwest::blocking::Client::new()
             .post(&uri)
@@ -282,7 +282,7 @@ impl<'a, T: TokenCredential> CertificateClient<'a, T> {
         uri: String,
         body: String,
     ) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .patch(&uri)
@@ -305,7 +305,7 @@ impl<'a, T: TokenCredential> CertificateClient<'a, T> {
     }
 
     pub(crate) fn _delete_authed(&mut self, uri: String) -> Result<String, Error> {
-        self.refresh_token();
+        self.refresh_token()?;
 
         let resp = reqwest::blocking::Client::new()
             .delete(&uri)
