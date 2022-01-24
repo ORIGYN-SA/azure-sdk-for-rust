@@ -2,6 +2,7 @@ pub mod certificate;
 mod client;
 pub mod key;
 pub mod secret;
+mod sync;
 
 pub use client::{CertificateClient, KeyClient};
 
