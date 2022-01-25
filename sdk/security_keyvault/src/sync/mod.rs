@@ -4,6 +4,8 @@ use azure_core::auth::TokenResponse;
 use const_format::formatcp;
 use url::Url;
 
+pub use key::{SignatureAlgorithm, SignResult, JsonWebKey};
+
 pub(crate) const API_VERSION: &str = "7.0";
 pub(crate) const API_VERSION_PARAM: &str = formatcp!("api-version={}", API_VERSION);
 
