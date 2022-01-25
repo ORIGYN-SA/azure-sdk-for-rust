@@ -1,5 +1,5 @@
 pub mod certificate;
-// mod client;
+mod client;
 pub mod key;
 pub mod secret;
 mod sync; // Sync version of Client
