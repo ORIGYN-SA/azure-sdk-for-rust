@@ -191,7 +191,7 @@ impl azure_core::auth::TokenCredential for ClientSecretCredential {
 
 impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
 
-    fn get_token(&self, resource: &str) -> Result<TokenResponse, Self::Error> {
+    fn get_token(&self, resource: &str) -> Result<TokenResponse, ClientSecretCredentialError> {
         let options = self.options();
         let authority_host = options.authority_host();
 
