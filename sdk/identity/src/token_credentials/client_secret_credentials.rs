@@ -191,7 +191,7 @@ impl azure_core::auth::TokenCredential for ClientSecretCredential {
 
 impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
 
-    fn get_token(&self, resource: &str) -> Result<TokenResponse, ClientSecretCredentialError> {
+    fn get_token(&self, resource: &str) -> Result<TokenResponse, azure_security_keyvault::Error> {
         let options = self.options();
         let authority_host = options.authority_host();
 
@@ -201,9 +201,8 @@ impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
                 authority_host, self.tenant_id
             ))
                 .map_err(|error| {
-                    ClientSecretCredentialError::FailedConstructTokenEndpoint(
-                        error,
-                        self.tenant_id.clone(),
+                    azure_security_keyvault::Error::General(
+                        format!("{} {}", error.to_string(), self.tenant_id.clone())
                     )
                 })?,
         );
@@ -214,9 +213,8 @@ impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
                 authority_host, self.tenant_id
             ))
                 .map_err(|error| {
-                    ClientSecretCredentialError::FailedConstructAuthorizeEndpoint(
-                        error,
-                        self.tenant_id.clone(),
+                    azure_security_keyvault::Error::General(
+                        format!("{} {}", error.to_string(), self.tenant_id.clone())
                     )
                 })?,
         );
@@ -244,7 +242,7 @@ impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
                         .unwrap(),
                 )
             })
-            .map_err(ClientSecretCredentialError::RequestTokenError)?;
+            .map_err(azure_security_keyvault::Error::General)?;
 
         Ok(token_result)
     }
