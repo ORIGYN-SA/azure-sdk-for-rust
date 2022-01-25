@@ -2,10 +2,9 @@ pub mod certificate;
 mod client;
 pub mod key;
 pub mod secret;
-mod sync; // Sync version of Client
+pub mod sync; // Sync version of Client
 
-pub use sync::{CertificateClient, KeyClient};
-// pub use client::{CertificateClient, KeyClient};
+pub use client::{CertificateClient, KeyClient};
 
 #[non_exhaustive]
 #[derive(thiserror::Error, Debug)]
