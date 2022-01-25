@@ -242,7 +242,9 @@ impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
                         .unwrap(),
                 )
             })
-            .map_err(azure_security_keyvault::Error::General)?;
+            .map_err(|err| {
+                azure_security_keyvault::Error::General(err.to_string())
+            })?;
 
         Ok(token_result)
     }
