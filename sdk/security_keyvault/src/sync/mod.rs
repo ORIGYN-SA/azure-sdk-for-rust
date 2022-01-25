@@ -1,4 +1,5 @@
 use crate::Error;
+mod key;
 use azure_core::auth::TokenResponse;
 use const_format::formatcp;
 use url::Url;
