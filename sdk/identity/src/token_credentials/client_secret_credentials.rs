@@ -4,6 +4,7 @@ use chrono::Utc;
 use oauth2::{
     basic::{BasicClient, BasicErrorResponseType},
     reqwest::async_http_client,
+    reqwest::http_client,
     AccessToken, AuthType, AuthUrl, Scope, StandardErrorResponse, TokenUrl,
 };
 use std::{str, time::Duration};
@@ -185,5 +186,66 @@ impl azure_core::auth::TokenCredential for ClientSecretCredential {
         TokenCredential::get_token(self, resource)
             .await
             .map_err(|error| azure_core::Error::GetToken(Box::new(error)))
+    }
+}
+
+impl azure_security_keyvault::sync::TokenCredential for ClientSecretCredential {
+
+    fn get_token(&self, resource: &str) -> Result<TokenResponse, Self::Error> {
+        let options = self.options();
+        let authority_host = options.authority_host();
+
+        let token_url = TokenUrl::from_url(
+            Url::parse(&format!(
+                "{}/{}/oauth2/v2.0/token",
+                authority_host, self.tenant_id
+            ))
+                .map_err(|error| {
+                    ClientSecretCredentialError::FailedConstructTokenEndpoint(
+                        error,
+                        self.tenant_id.clone(),
+                    )
+                })?,
+        );
+
+        let auth_url = AuthUrl::from_url(
+            Url::parse(&format!(
+                "{}/{}/oauth2/v2.0/authorize",
+                authority_host, self.tenant_id
+            ))
+                .map_err(|error| {
+                    ClientSecretCredentialError::FailedConstructAuthorizeEndpoint(
+                        error,
+                        self.tenant_id.clone(),
+                    )
+                })?,
+        );
+
+        let client = BasicClient::new(
+            self.client_id.clone(),
+            self.client_secret.clone(),
+            auth_url,
+            Some(token_url),
+        )
+            .set_auth_type(AuthType::RequestBody);
+
+        let token_result = client
+            .exchange_client_credentials()
+            .add_scope(Scope::new(format!("{}/.default", resource)))
+            .request(http_client)
+            .map(|r| {
+                use oauth2::TokenResponse as _;
+                TokenResponse::new(
+                    AccessToken::new(r.access_token().secret().to_owned()),
+                    Utc::now()
+                        + chrono::Duration::from_std(
+                        r.expires_in().unwrap_or_else(|| Duration::from_secs(0)),
+                    )
+                        .unwrap(),
+                )
+            })
+            .map_err(ClientSecretCredentialError::RequestTokenError)?;
+
+        Ok(token_result)
     }
 }
